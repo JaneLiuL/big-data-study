@@ -21,4 +21,5 @@ spark streaming的底层还是spark core
 
 Spark是批量离线处理框架
 SparkStreaming是对Spark的封装，是微批框架
-
+![stream02](images/spark-stream02.png)
+![stream03](images/spark-stream03.png)
