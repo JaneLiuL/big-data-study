@@ -3,6 +3,7 @@
 ![architect](images/19-kafka.png)
 
 其实在producer例子的代码里面，我们可以看到我们往producer发送数据的时候，除了topic key value还可以有一个partition的参数也就是可以发送的时候指定partition
+生产者生产消息的时候会指定topic,按照分区策略（比如按key 哈希，轮训或者自定义分区器）来确定消息所属的分区pratition
 ![architect](images/20-kafka.png)
 
 # 拦截器和序列化
