@@ -1,0 +1,52 @@
+# # 基于 Ubuntu 22.04 的 Rust 官方镜像（已含 rustup、cargo）
+# FROM rust:1.70-slim-bullseye
+
+# # 安装 eBPF 开发依赖
+# RUN apt-get update && apt-get install -y \
+#     clang \
+#     llvm \
+#     libelf-dev \
+#     libbpf-dev \
+#     bpftool \
+#     linux-headers-$(uname -r) \
+#     && rm -rf /var/lib/apt/lists/*
+
+# # 安装 bpf-linker（Rust eBPF 编译必需）
+# RUN cargo install bpf-linker
+
+# # 设置工作目录
+# WORKDIR /workspace
+
+# # 启动时进入 bash
+# CMD ["bash"]
+
+FROM --platform=linux/amd64 ubuntu:22.04
+# 更新系统
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装 Rust 工具链
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+RUN source $HOME/.cargo/env
+
+# 安装 eBPF 开发依赖
+RUN sudo apt install -y \
+    clang \
+    llvm \
+    libelf-dev \
+    libbpf-dev \
+    bpftool \
+    linux-headers-$(uname -r) \
+    build-essential
+
+# 安装 bpf-linker
+RUN cargo install bpf-linker
+
+# 安装 Rust eBPF 相关工具（如 libbpf-cargo）
+RUN cargo install libbpf-cargo
+WORKDIR /workspace
+
+# # 启动时进入 bash
+CMD ["bash"]
