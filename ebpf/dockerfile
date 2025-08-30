@@ -38,8 +38,7 @@ RUN sudo apt install -y \
     libelf-dev \
     libbpf-dev \
     bpftool \
-    linux-headers-$(uname -r) \
-    build-essential
+    linux-hwe-6.5-tools-common
 
 # 安装 bpf-linker
 RUN cargo install bpf-linker
