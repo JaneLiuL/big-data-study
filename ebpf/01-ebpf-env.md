@@ -18,6 +18,13 @@ docker run -it --privileged --name ebpf-dev03 --platform linux/amd64  -v /Users/
 
 
 docker update --memory=4g --memory-swap=8g
+rustup show
+切换到全局使用nightly，而不使用stable
+rustup default nightly
+进入ebpf构建
+
+cargo build -Zbuild-std
+
 cargo build -Zbuild-std
 
 
