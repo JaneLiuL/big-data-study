@@ -16,3 +16,9 @@ docker run -it --privileged \
 docker run -it --privileged --name ebpf-dev03 --platform linux/amd64  -v /Users/jane/workspace/ebpf:/workspace -v /Users/jane/workspace/ubunturoot:/root janeliul/rust-develop:0.0.2
 ```
 
+
+docker update --memory=4g --memory-swap=8g
+cargo build -Zbuild-std
+
+
+
