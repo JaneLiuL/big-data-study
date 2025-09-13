@@ -1,0 +1,27 @@
+FROM golang:1.20-alpine AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o k8s-resource-manager .
+
+
+FROM alpine:3.17
+RUN apk --no-cache add ca-certificates tzdata
+ENV TZ=UTC
+
+RUN mkdir -p /opt/ns/deployment /opt/ns/statefulset && \
+    chmod 755 /opt/ns/deployment /opt/ns/statefulset
+COPY --from=builder /app/k8s-resource-manager /usr/local/bin/
+
+
+EXPOSE 8080
+
+
+ENTRYPOINT ["k8s-resource-manager"]
+    
