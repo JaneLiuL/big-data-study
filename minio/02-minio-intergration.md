@@ -102,3 +102,42 @@ Trino 是 “数据查询者”：它不关心数据是怎么被管理的，只�
 
 ## 配置Trino和Minio集成
 在 Trino 中配置与 MinIO 的集成，核心是通过 Trino 的 Hive 连接器（最常用）或 S3 连接器 关联 MinIO 的对象存储，实现对 MinIO 中数据的查询。以下是详细的配置步骤和管理方法：
+在 Trino 集群的 etc/catalog 目录下，创建一个以 .properties 结尾的配置文件（如 minio.properties），内容如下：
+```
+# 指定连接器类型为 Hive
+connector.name=hive
+
+# Hive 元数据存储（可选：若用 Hive Metastore 管理表结构，需配置；若直接查文件，可省略）
+hive.metastore.uri=thrift://<hive-metastore-ip>:9083
+
+# 配置 MinIO 作为底层存储（兼容 S3）
+hive.s3.endpoint=http://<minio-ip>:9000  # MinIO 服务地址（http/https 需与 MinIO 配置一致）
+hive.s3.path-style-access=true  # 启用路径风格访问（必需，MinIO 默认使用路径风格）
+hive.s3.access-key=<your-minio-access-key>  # MinIO 的 Access Key
+hive.s3.secret-key=<your-minio-secret-key>  # MinIO 的 Secret Key
+
+# 可选：配置 S3 客户端参数（如超时时间）
+hive.s3.connect-timeout=5s
+hive.s3.read-timeout=10s
+
+# 可选：指定默认文件格式（如 Parquet，查询时可省略格式声明）
+hive.default-file-format=PARQUET
+```
+
+## 进阶配置：使用 S3 连接器（可选）
+除了 Hive 连接器，Trino 还提供 S3 连接器（s3 类型），专门用于查询 S3/MinIO 中的对象存储文件，配置更简洁（无需依赖 Hive Metastore）。
+创建 S3 连接器配置文件（etc/catalog/minio-s3.properties）
+```
+connector.name=s3
+
+# MinIO 访问配置
+s3.endpoint=http://<minio-ip>:9000
+s3.path-style-access=true
+s3.access-key=<your-minio-access-key>
+s3.secret-key=<your-minio-secret-key>
+
+# 配置默认文件格式和分割符（针对 CSV 等文本文件）
+s3.default-file-format=PARQUET
+s3.csv.separator=,
+```
+
